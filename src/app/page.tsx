@@ -1,10 +1,9 @@
 "use client"
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
   return (
     <div>
-      <ConnectButton showBalance={false}></ConnectButton>
+      HI
     </div>
   );
 }

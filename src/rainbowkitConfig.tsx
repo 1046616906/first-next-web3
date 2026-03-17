@@ -6,5 +6,5 @@ export default getDefaultConfig({
     appName: 'TSender',
     projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
     chains: [mainnet, zksync, anvil],
-    ssr: false
+    ssr: true
 })

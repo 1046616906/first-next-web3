@@ -18,15 +18,15 @@ export function Providers(props: { children: ReactNode }) {
         setMounted(true)
     }, [])
 
+    if (!mounted) return null;
+
     return (
-        <div>
-            <WagmiProvider config={rainbowkitConfig}>
-                <QueryClientProvider client={queryClient}>
-                    <RainbowKitProvider >
-                        {mounted ? props.children : null}
-                    </RainbowKitProvider>
-                </QueryClientProvider>
-            </WagmiProvider>
-        </div>
+        <WagmiProvider config={rainbowkitConfig}>
+            <QueryClientProvider client={queryClient}>
+                <RainbowKitProvider>
+                    {props.children}
+                </RainbowKitProvider>
+            </QueryClientProvider>
+        </WagmiProvider>
     )
 }
