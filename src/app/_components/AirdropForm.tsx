@@ -5,18 +5,25 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useChainId } from "wagmi"
+import { chainsToTSender } from "@/lib/contstants"
 export function AirdropForm() {
     const [tokenAddress, setTokenAddress] = useState("")
     const [recipients, setRecipients] = useState("")
     const [amount, setAmount] = useState("")
     const chainId = useChainId()
     const submit = () => {
+        const tSenderAddress = chainsToTSender[chainId].tsender  
         // 1a.If already approved,moved to step 2
         // 1b. Approve our tsender contract to send our tokens
         // 2. Call the airdrop function on the tsender contract
         // 3. Wait for the transaction to be mined
 
     }
+
+    const approved = () => {
+
+    }
+
     return (
         <>
             <Field>
