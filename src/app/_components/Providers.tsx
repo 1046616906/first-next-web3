@@ -2,7 +2,7 @@
 
 import '@rainbow-me/rainbowkit/styles.css';
 import { ReactNode, useEffect, useState } from "react";
-import rainbowkitConfig from "../rainbowkitConfig";
+import rainbowkitConfig from "../../rainbowkitConfig";
 import {
     QueryClientProvider,
     QueryClient,

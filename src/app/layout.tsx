@@ -1,6 +1,6 @@
 
 import "./globals.css";
-import Web3Gatekeeper from './Web3Gatekeeper';
+import Web3Gatekeeper from './_components/Web3Gatekeeper';
 import Header from '@/components/Header';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
