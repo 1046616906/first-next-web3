@@ -4,15 +4,20 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { useChainId } from "wagmi"
-import { chainsToTSender } from "@/lib/contstants"
+import { useChainId, useConnection } from "wagmi"
+import { readContract } from '@wagmi/core'
+import { chainsToTSender, erc20Abi } from "@/lib/contstants"
+import config from '@/rainbowkitConfig'
 export function AirdropForm() {
     const [tokenAddress, setTokenAddress] = useState("")
     const [recipients, setRecipients] = useState("")
     const [amount, setAmount] = useState("")
     const chainId = useChainId()
-    const submit = () => {
-        const tSenderAddress = chainsToTSender[chainId].tsender  
+    const connection = useConnection()
+    const submit = async () => {
+        const tSenderAddress = chainsToTSender[chainId].tsender
+        const approvedAmount = await getApprovedAmount(tSenderAddress)
+        console.log(approvedAmount)
         // 1a.If already approved,moved to step 2
         // 1b. Approve our tsender contract to send our tokens
         // 2. Call the airdrop function on the tsender contract
@@ -20,8 +25,16 @@ export function AirdropForm() {
 
     }
 
-    const approved = () => {
+    const getApprovedAmount = async (tSenderAddress: string | null): Promise<number> => {
+        if (!tSenderAddress) return 0
 
+        const response = await readContract(config, {
+            abi: erc20Abi,
+            functionName: 'allowance',
+            address: tokenAddress as `0x${string}`,
+            args: [connection.address, tSenderAddress as `0x${string}`]
+        })
+        return response as number
     }
 
     return (
