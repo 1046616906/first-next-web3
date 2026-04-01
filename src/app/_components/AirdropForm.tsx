@@ -1,12 +1,13 @@
 "user client";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useChainId, useConnection } from "wagmi";
-import { readContract } from "@wagmi/core";
+import { useChainId, useConnection, useWriteContract } from "wagmi";
+import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { chainsToTSender, erc20Abi } from "@/lib/contstants";
+import { calculateTotal } from "@/utils/calculateTotal";
 import config from "@/rainbowkitConfig";
 export function AirdropForm() {
   const [tokenAddress, setTokenAddress] = useState("");
@@ -14,10 +15,24 @@ export function AirdropForm() {
   const [amount, setAmount] = useState("");
   const chainId = useChainId();
   const connection = useConnection();
+  const { mutateAsync } = useWriteContract();
+
+  const amountTotal = useMemo(() => calculateTotal(amount), [amount]);
   const submit = async () => {
     const tSenderAddress = chainsToTSender[chainId].tsender;
     const approvedAmount = await getApprovedAmount(tSenderAddress);
     console.log(approvedAmount);
+    if (approvedAmount < amountTotal) {
+      const hash = await mutateAsync({
+        abi: erc20Abi,
+        functionName: "approve",
+        address: tokenAddress as `0x${string}`,
+        args: [tSenderAddress as `0x${string}`, BigInt(amountTotal)],
+      });
+      await waitForTransactionReceipt(config, {
+        hash,
+      });
+    }
     // 1a.If already approved,moved to step 2
     // 1b. Approve our tsender contract to send our tokens
     // 2. Call the airdrop function on the tsender contract
